@@ -16,30 +16,6 @@
 #   * A GET request whose path contains a short name.  The server looks up
 #     that short name in its dictionary and redirects to the corresponding
 #     long URI.
-#
-# Your job in this exercise is to finish the server code.
-#
-# Here are the steps you need to complete:
-#
-# 1. Write the CheckURI function, which takes a URI and returns True if a
-#    request to that URI returns a 200 OK, and False otherwise.
-#
-# 2. Write the code inside do_GET that sends a 303 redirect to a known name.
-#
-# 3. Write the code inside do_POST that sends a 400 error if the form fields
-#    are missing.
-#
-# 4. Write the code inside do_POST that sends a 303 redirect to the form
-#    after saving a newly submitted URI.
-#
-# 5. Write the code inside do_POST that sends a 404 error if a URI is not
-#    successfully checked (i.e. if CheckURI returns false).
-#
-# In each step, you'll need to delete a line of code that raises the
-# NotImplementedError exception.  These are there as placeholders in the
-# starter code.
-#
-# After writing each step, restart the server and run test.py to test it.
 
 import http.server
 import requests
@@ -75,14 +51,11 @@ def CheckURI(uri, timeout=5):
     False if that GET request returns any other response, or doesn't return
     (i.e. times out).
     '''
-    # 1. Write this function.  Delete the following line.
     try:
         r = requests.get(uri)
         return r.status_code
     except requests.RequestException:
         return False
-    #raise NotImplementedError("Step 1 isn't written yet.")
-
 
 class Shortener(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
@@ -96,8 +69,6 @@ class Shortener(http.server.BaseHTTPRequestHandler):
                 self.send_response(303)
                 self.send_header('Location', memory[name])
                 self.end_headers()
-                #    Delete the following line.
-                #raise NotImplementedError("Step 2 isn't written yet.")
             else:
                 # We don't know that name! Send a 404 error.
                 self.send_response(404)
@@ -128,8 +99,6 @@ class Shortener(http.server.BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write("You forgot to attach params!".encode())
             return
-            #    Delete the following line.
-            #raise NotImplementedError("Step 3 isn't written yet!")
 
         longuri = params["longuri"][0]
         shortname = params["shortname"][0]
@@ -137,23 +106,17 @@ class Shortener(http.server.BaseHTTPRequestHandler):
         if CheckURI(longuri):
             # This URI is good!  Remember it under the specified name.
             memory[shortname] = longuri
-
             # 4. Serve a redirect to the root page (the form).
             self.send_response(303)
             self.send_header('Location', '/')
             self.end_headers()
-                #    Delete the following line.
-            #raise NotImplementedError("Step 4 isn't written yet!")
         else:
             # Didn't successfully fetch the long URI.
-
             # 5. Send a 404 error with a useful message.
             self.send_response(404)
             self.send_header('Content-type', 'text/plain; charset=utf-8')
             self.end_headers()
             self.wfile.write("Couldn't fetch URI '{}'. Sorry!".format(longuri).encode())
-            #    Delete the following line.
-            #raise NotImplementedError("Step 5 isn't written yet!")
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 8000))
