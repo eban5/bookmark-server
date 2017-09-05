@@ -43,6 +43,7 @@
 
 import http.server
 import requests
+import os
 from urllib.parse import unquote, parse_qs
 
 memory = {}
@@ -155,6 +156,7 @@ class Shortener(http.server.BaseHTTPRequestHandler):
             #raise NotImplementedError("Step 5 isn't written yet!")
 
 if __name__ == '__main__':
-    server_address = ('', 8000)
+    port = int(os.environ.get('PORT', 8000))
+    server_address = ('', port)
     httpd = http.server.HTTPServer(server_address, Shortener)
     httpd.serve_forever()
