@@ -27,6 +27,7 @@ from urllib.parse import unquote, parse_qs
 class ThreadHTTPServer(ThreadingMixIn, http.server.HTTPServer):
     "This is an HTTPServer that supports thread-based concurrency."
 
+
 memory = {}
 
 form = '''<!DOCTYPE html>
@@ -126,5 +127,5 @@ class Shortener(http.server.BaseHTTPRequestHandler):
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 8000))
     server_address = ('', port)
-    httpd = http.server.ThreadHTTPServer(server_address, Shortener)
+    httpd = ThreadHTTPServer(server_address, Shortener)
     httpd.serve_forever()
