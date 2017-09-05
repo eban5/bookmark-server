@@ -72,8 +72,8 @@ def auto_prefix(uri: str) -> str:
     if parsed.scheme == '':
         final_uri = "https://" + uri
         return final_uri
-    else:
-        return final_uri
+
+    return final_uri
 
 class Shortener(http.server.BaseHTTPRequestHandler):
     '''
