@@ -124,6 +124,17 @@ class Shortener(http.server.BaseHTTPRequestHandler):
         longuri = auto_prefix(params["longuri"][0])
         shortname = params["shortname"][0]
 
+        # Prevent duplicate entries.
+        for k in MEMORY:
+            if MEMORY[k] == longuri:
+                self.send_response(400)
+                self.send_header('Content-type', 'text/plain; charset=utf-8')
+                self.end_headers()
+                self.wfile.write("You already bookmarked {0} as {1}"
+                                 .format(longuri, k)
+                                 .encode())
+                return
+
         if check_uri(longuri):
             # This URI is good!  Remember it under the specified name.
             MEMORY[shortname] = longuri
